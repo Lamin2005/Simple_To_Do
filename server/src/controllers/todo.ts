@@ -19,7 +19,7 @@ export const create = async (req: Request, res: Response) => {
 };
 
 export const delete_todo = async (req: Request, res: Response) => {
-  const { id } = req.body;
+  let { id } = req.params;
   try {
     const deleteTodo = await Todo.findByIdAndDelete(id);
 

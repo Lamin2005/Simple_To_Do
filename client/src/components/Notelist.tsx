@@ -5,6 +5,7 @@ import { createNote } from "../services/notelist";
 
 function Notelist() {
   const [notes, setNotes] = useState<Note[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const [title, setTitle] = useState<string>("");
   const [edit, setEdit] = useState<boolean>(false);
   const [eidtId, setEditId] = useState<string>("");
@@ -18,6 +19,8 @@ function Notelist() {
         setNotes(notes);
       } catch (error) {
         console.error("Error fetching notes: ", error);
+      } finally {
+        setLoading(false);
       }
     };
     getNotes();
@@ -67,32 +70,53 @@ function Notelist() {
   return (
     <div>
       <h2 className="font-bold text-2xl my-1.5">Notes List</h2>
-      {notes.map((note) => (
-        <div
-          key={note._id}
-          className="grid grid-cols-1 md:grid-cols-2 gap-3 items-center"
-        >
-          <p>{note.title}</p>
-          <div>
-            <button
-              onClick={() => deletehandler(note._id)}
-              className="px-2 bg-red-500 text-white cursor-pointer m-2 rounded-md py-1"
+
+      {loading && (
+        <>
+          <p className="text-gray-500 text-center italic">
+            Loading Note Lists...
+          </p>
+        </>
+      )}
+
+      {!loading && notes.length !== 0 && (
+        <>
+          {notes.map((note) => (
+            <div
+              key={note._id}
+              className="grid grid-cols-1 md:grid-cols-2 gap-3 items-center"
             >
-              Delete
-            </button>
-            <button
-              className="px-2 bg-blue-400 text-white cursor-pointer m-2 rounded-md py-1"
-              onClick={() => {
-                setEdit(true);
-                setTitle(note.title);
-                setEditId(note._id);
-              }}
-            >
-              Edit
-            </button>
-          </div>
-        </div>
-      ))}
+              <p>{note.title}</p>
+              <div>
+                <button
+                  onClick={() => deletehandler(note._id)}
+                  className="px-2 bg-red-500 text-white cursor-pointer m-2 rounded-md py-1"
+                >
+                  Delete
+                </button>
+                <button
+                  className="px-2 bg-blue-400 text-white cursor-pointer m-2 rounded-md py-1"
+                  onClick={() => {
+                    setEdit(true);
+                    setTitle(note.title);
+                    setEditId(note._id);
+                  }}
+                >
+                  Edit
+                </button>
+              </div>
+            </div>
+          ))}
+        </>
+      )}
+
+      {!loading && notes.length == 0 && (
+        <>
+          <p className="text-gray-500 text-center italic">
+            No Note List Available...
+          </p>
+        </>
+      )}
 
       <form className="mt-4" onSubmit={submithandler}>
         <input
