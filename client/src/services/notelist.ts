@@ -27,13 +27,25 @@ export const createNote = async (title: string) => {
   return data.result;
 };
 
-export const deleteNote = async (id: number) => {
+export const deleteNote = async (id: string) => {
   const response = await fetch(`${API_URL}/delete`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ id }),
+  });
+  const data = await response.json();
+  return data.result;
+};
+
+export const updateNote = async (id: string, title: string) => {
+  const response = await fetch(`${API_URL}/todolist-edit/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ id, title }),
   });
   const data = await response.json();
   return data.result;

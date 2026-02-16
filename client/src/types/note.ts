@@ -1,4 +1,4 @@
 export type Note = {
-    _id: number;
+    _id: string;
     title: string;
 }

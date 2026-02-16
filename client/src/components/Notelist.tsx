@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { Note } from "../types/note";
-import { deleteNote, fetchNotes } from "../services/notelist";
+import { deleteNote, fetchNotes, updateNote } from "../services/notelist";
 import { createNote } from "../services/notelist";
 
 function Notelist() {
   const [notes, setNotes] = useState<Note[]>([]);
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState<string>("");
+  const [edit, setEdit] = useState<boolean>(false);
+  const [eidtId, setEditId] = useState<string>("");
   console.log("Current API_URL:", notes);
 
   useEffect(() => {
@@ -15,7 +17,7 @@ function Notelist() {
         console.log("Fetched notes:", notes);
         setNotes(notes);
       } catch (error) {
-        console.error("Error fetching notes:", error);
+        console.error("Error fetching notes: ", error);
       }
     };
     getNotes();
@@ -23,7 +25,13 @@ function Notelist() {
 
   const submithandler = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (title.trim() === "") return;
     try {
+      if (edit) {
+        updatehandler(eidtId, title);
+        setTitle("");
+        return;
+      }
       const newNote = await createNote(title);
       setNotes((prevNotes) => [...prevNotes, newNote]);
       setTitle("");
@@ -32,22 +40,57 @@ function Notelist() {
     }
   };
 
-  const deletehandler = async (id: number) => {
+  const deletehandler = async (id: string) => {
     try {
       await deleteNote(id);
       setNotes((prevNotes) => prevNotes.filter((note) => note._id !== id));
     } catch (error) {
-      console.log("Error deleting note:", error);
+      console.log("Error deleting note: ", error);
+    }
+  };
+
+  const updatehandler = async (id: string, title: string) => {
+    try {
+      await updateNote(id, title);
+      setNotes((prevNote) =>
+        prevNote.filter((note) =>
+          note._id === id ? (note.title = title) : note.title,
+        ),
+      );
+      setEdit(false);
+      setEditId("");
+    } catch (error) {
+      console.log("Error Updateing note: ", error);
     }
   };
 
   return (
     <div>
-      <h2 className="font-bold text-2xl">Notes List</h2>
+      <h2 className="font-bold text-2xl my-1.5">Notes List</h2>
       {notes.map((note) => (
-        <div key={note._id} className="grid grid-cols-1 md:grid-cols-2 gap-3 items-center">
+        <div
+          key={note._id}
+          className="grid grid-cols-1 md:grid-cols-2 gap-3 items-center"
+        >
           <p>{note.title}</p>
-          <button onClick={() => deletehandler(note._id)} className="px-2 bg-blue-400 text-white cursor-pointer m-2">Delete</button>
+          <div>
+            <button
+              onClick={() => deletehandler(note._id)}
+              className="px-2 bg-red-500 text-white cursor-pointer m-2 rounded-md py-1"
+            >
+              Delete
+            </button>
+            <button
+              className="px-2 bg-blue-400 text-white cursor-pointer m-2 rounded-md py-1"
+              onClick={() => {
+                setEdit(true);
+                setTitle(note.title);
+                setEditId(note._id);
+              }}
+            >
+              Edit
+            </button>
+          </div>
         </div>
       ))}
 
@@ -63,8 +106,21 @@ function Notelist() {
           type="submit"
           className="cursor-pointer bg-blue-500 text-white px-4 py-2 rounded-md"
         >
-          Add Note
+          {edit ? "Update" : "Add"}
         </button>
+
+        {edit && (
+          <button
+            onClick={() => {
+              setEdit(false);
+              setEditId("");
+              setTitle("");
+            }}
+            className="cursor-pointer bg-red-500 text-white px-4 py-2 rounded-md mx-2"
+          >
+            Cancle
+          </button>
+        )}
       </form>
     </div>
   );
