@@ -4,6 +4,7 @@ import { contect_DB } from "./db/db";
 import todoRoutes from "./routes/todoRoute";
 import userRoutes from "./routes/userRoute";
 import cors from "cors";
+import errorHandler from "./middlewares/errorHandler";
 
 dotenv.config();
 const app = express();
@@ -18,6 +19,8 @@ app.use(
 
 app.use(todoRoutes);
 app.use(userRoutes);
+
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
