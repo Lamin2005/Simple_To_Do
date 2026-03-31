@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import User from "../models/user";
 import { generateToken } from "../utils/genertateToken";
 import asyncHandler from "../utils/asyncHandler";
+import { AuthenticatedRequest } from "../middlewares/authmiddleware";
 
 export const register = asyncHandler(async (req: Request, res: Response) => {
   const { name, email, password } = req.body;
@@ -65,8 +66,23 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
 export const logout = asyncHandler(async (req: Request, res: Response) => {
   res.cookie("token", "", {
     httpOnly: true,
-    expires : new Date(0)
+    expires: new Date(0),
   });
 
   res.status(200).json({ message: "Logout Successfully! " });
 });
+
+export const getProfile = async (req: AuthenticatedRequest, res: Response) => {
+  const user = req.user?.name;
+
+  res.status(200).json({ message: "User Profile is show", user: user });
+};
+
+export const updateProfile = async (
+  req: AuthenticatedRequest,
+  res: Response,
+) => {
+  const user = req.user?.name;
+
+  res.status(200).json({ message: "User Profile is Update", user: user });
+};

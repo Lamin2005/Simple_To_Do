@@ -5,10 +5,10 @@ const asyncHandler =
     controllfn: (
       req: Request,
       res: Response,
-      next?: NextFunction,
+      next: NextFunction,
     ) => Promise<void>,
   ) =>
-  (req: Request, res: Response, next?: NextFunction) => {
+  (req: Request, res: Response, next: NextFunction) => {
     Promise.resolve(controllfn(req, res, next)).catch(next);
   };
 
