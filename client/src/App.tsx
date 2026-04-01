@@ -1,14 +1,11 @@
-import Notelist from "./components/Notelist"
-
+import Notelist from "./components/Notelist";
 
 function App() {
- 
-
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <Notelist/>
+      <Notelist />
     </main>
-  )
+  );
 }
 
-export default App
+export default App;

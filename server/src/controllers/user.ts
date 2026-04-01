@@ -73,7 +73,7 @@ export const logout = asyncHandler(async (req: Request, res: Response) => {
 });
 
 export const getProfile = async (req: AuthenticatedRequest, res: Response) => {
-  const user = req.user?.name;
+  const user = req.user;
 
   res.status(200).json({ message: "User Profile is show", user: user });
 };
@@ -82,7 +82,38 @@ export const updateProfile = async (
   req: AuthenticatedRequest,
   res: Response,
 ) => {
-  const user = req.user?.name;
+  const user_id = req.user?._id;
 
-  res.status(200).json({ message: "User Profile is Update", user: user });
+  if (!user_id) {
+    res.status(404);
+    throw new Error("No Authenicated!");
+  }
+
+  let existUser = await User.findById(user_id);
+
+  if (!existUser) {
+    res.status(404);
+    throw new Error("User not Found!");
+  }
+
+  const { name, email, password } = req.body;
+
+  existUser.name = name ?? existUser.name;
+  existUser.email = email ?? existUser.email;
+
+  if (password) {
+    existUser.password = password;
+  }
+
+  let updateUser = await existUser.save();
+
+  const selectedUser = {
+    _id: updateUser._id,
+    name: updateUser.name,
+    email: updateUser.email,
+  };
+
+  res
+    .status(200)
+    .json({ message: "User Profile is Update", user: selectedUser });
 };
