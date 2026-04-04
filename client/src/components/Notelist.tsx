@@ -84,10 +84,10 @@ function Notelist() {
           {notes.map((note) => (
             <div
               key={note._id}
-              className="grid grid-cols-1 md:grid-cols-2 gap-3 items-center"
+              className="grid grid-cols-1 md:grid-cols-2 gap-3 items-center justify-between  bg-blue-50 rounded-md p-3 mb-3"
             >
               <p>{note.title}</p>
-              <div>
+              <div className="flex items-center justify-end">
                 <button
                   onClick={() => deletehandler(note._id)}
                   className="px-2 bg-red-500 text-white cursor-pointer m-2 rounded-md py-1"
