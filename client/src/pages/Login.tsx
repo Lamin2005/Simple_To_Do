@@ -1,13 +1,18 @@
 import { SubmitHandler, useForm } from "react-hook-form";
+import { loginSchema } from "../schema/login";
+import zod from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 function Login() {
-  interface IFormInput {
-    name: string;
-    email: string;
-    password: string;
-  }
+  type IFormInput = zod.infer<typeof loginSchema>;
 
-  const { register, handleSubmit } = useForm<IFormInput>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<IFormInput>({
+    resolver: zodResolver(loginSchema),
+  });
 
   const submitHandler: SubmitHandler<IFormInput> = (data) => {
     console.log("Form Data : ", data);
@@ -21,14 +26,17 @@ function Login() {
         onSubmit={handleSubmit(submitHandler)}
       >
         <label htmlFor="username" className="text-gray-700 font-medium">
-          Username
+          Email
         </label>
         <input
           type="text"
-          placeholder="Enter your username"
+          placeholder="Enter your email"
           className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          {...register("name", { required: true })}
+          {...register("email", { required: true })}
         />
+        {errors.email && (
+          <p className="text-red-500 text-sm">{errors.email.message}</p>
+        )}
 
         <label htmlFor="password" className="text-gray-700 font-medium">
           Password
@@ -40,9 +48,13 @@ function Login() {
           className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           {...register("password", { required: true, maxLength: 20 })}
         />
+        {errors.password && (
+          <p className="text-red-500 text-sm">{errors.password.message}</p>
+        )}
         <button
           type="submit"
           className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition cursor-pointer"
+          disabled={isSubmitting}
         >
           Login
         </button>
