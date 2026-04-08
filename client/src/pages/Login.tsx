@@ -2,6 +2,14 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { loginSchema } from "../schema/login";
 import zod from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useLoginMutation } from "../features/api/userapi";
+import { useDispatch } from "react-redux";
+import { getUserInfo } from "../features/auth/AuthSlice";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
+import type { RootState } from "../store";
 
 function Login() {
   type IFormInput = zod.infer<typeof loginSchema>;
@@ -10,12 +18,34 @@ function Login() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
+    reset,
   } = useForm<IFormInput>({
     resolver: zodResolver(loginSchema),
   });
 
-  const submitHandler: SubmitHandler<IFormInput> = (data) => {
-    console.log("Form Data : ", data);
+  const navigate = useNavigate();
+
+  const userInfo = useSelector((state: RootState) => state.auth.userInfo);
+  useEffect(() => {
+    if (userInfo) {
+      navigate("/");
+    }
+  }, [navigate, userInfo]);
+
+  const [login] = useLoginMutation();
+  const dispatch = useDispatch();
+
+  const submitHandler: SubmitHandler<IFormInput> = async (data) => {
+    try {
+      const response = await login(data).unwrap();
+      dispatch(getUserInfo({...response.user}));
+      toast.success(`${response.message}`);
+      console.log("Login successful:", response);
+    } catch (error: unknown) {
+      toast.error(`${(error as { data: { message: string } }).data.message}`);
+      reset();
+      console.error("Login failed:", error);
+    }
   };
 
   return (
