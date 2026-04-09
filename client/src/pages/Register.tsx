@@ -2,20 +2,48 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { registerSchema } from "../schema/register";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { RootState } from "../store";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useEffect } from "react";
+import { useRegisterMutation } from "../features/api/userapi";
+import { toast } from "react-toastify";
 
 function Register() {
   type IFormInput = z.infer<typeof registerSchema>;
+
+  const userInfo = useSelector((state: RootState) => state.auth.userInfo);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (userInfo) {
+      navigate("/");
+    }
+  }, [userInfo, navigate]);
 
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
+    reset,
   } = useForm<IFormInput>({
     resolver: zodResolver(registerSchema),
   });
 
-  const submitHandler: SubmitHandler<IFormInput> = (data) => {
-    console.log("Form Data : ", data);
+  const [registerUser] = useRegisterMutation();
+
+  const submitHandler: SubmitHandler<IFormInput> = async (data) => {
+    try {
+      const response = await registerUser(data).unwrap();
+      toast.success(`${response.message}`);
+      console.log("Registration successful:", response);
+      reset();
+      navigate("/login");
+    } catch (error) {
+      reset();
+      toast.error(`${(error as { data: { message: string } }).data.message}`);
+      console.error("Registration failed:", error);
+    }
   };
 
   return (

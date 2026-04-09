@@ -4,6 +4,7 @@ import { generateToken } from "../utils/genertateToken";
 import asyncHandler from "../utils/asyncHandler";
 import { AuthenticatedRequest } from "../middlewares/authmiddleware";
 
+// POST /register
 export const register = asyncHandler(async (req: Request, res: Response) => {
   const { name, email, password } = req.body;
 
@@ -20,13 +21,14 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
     password,
   });
   if (newUser) {
-    res.status(201).json(newUser);
+    res.status(201).json({ newUser, message: "User Register Successfully!" });
   } else {
     res.status(400);
     throw new Error("Something went Wrong!");
   }
 });
 
+// POST /login
 export const login = asyncHandler(async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
@@ -63,6 +65,7 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
   }
 });
 
+// POST /logout
 export const logout = asyncHandler(async (req: Request, res: Response) => {
   res.cookie("token", "", {
     httpOnly: true,
@@ -72,12 +75,14 @@ export const logout = asyncHandler(async (req: Request, res: Response) => {
   res.status(200).json({ message: "Logout Successfully! " });
 });
 
+// GET /profile
 export const getProfile = async (req: AuthenticatedRequest, res: Response) => {
   const user = req.user;
 
   res.status(200).json({ message: "User Profile is show", user: user });
 };
 
+// PUT /profile
 export const updateProfile = async (
   req: AuthenticatedRequest,
   res: Response,

@@ -1,10 +1,25 @@
 import { Link } from "react-router-dom";
 import { RootState } from "../store";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useLogoutMutation } from "../features/api/userapi";
+import { toast } from "react-toastify";
+import { clearUserInfo } from "../features/auth/AuthSlice";
 
 function Header() {
   const userInfo = useSelector((state: RootState) => state.auth.userInfo);
-  console.log("User INFO :", userInfo);
+  const [logout, { isLoading }] = useLogoutMutation();
+  const dispatch = useDispatch();
+
+  const Logout = async () => {
+    try {
+      await logout({}).unwrap();
+      dispatch(clearUserInfo());
+      toast.success("Logout successful.");
+    } catch (error) {
+      toast.error("Logout failed. Please try again.");
+      console.error("Logout failed: ", error);
+    }
+  };
 
   return (
     <header className="bg-white shadow-md">
@@ -17,12 +32,15 @@ function Header() {
           {userInfo ? (
             <>
               <span className="text-gray-600">Welcome, {userInfo.name}</span>
-              <Link
-                to="/"
-                className="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 transition"
+              <button
+                className="px-4 py-2 rounded-lg cursor-pointer bg-red-600 text-white hover:bg-red-700 transition"
+                onClick={() => {
+                  Logout();
+                }}
+                disabled={isLoading}
               >
                 Logout
-              </Link>
+              </button>
             </>
           ) : (
             <>
