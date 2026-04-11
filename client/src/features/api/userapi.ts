@@ -9,6 +9,12 @@ interface RegisterCredentials extends LoginCredentials {
   name: string;
 }
 
+interface UpdateProfile  {
+  name?: string;
+  email?: string;
+  password?: string;
+};
+
 export const userapi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     // getUserInfo: builder.query({
@@ -40,8 +46,17 @@ export const userapi = apiSlice.injectEndpoints({
         credentials: "include",
       }),
     }),
+
+    updateProfile: builder.mutation({
+      query: (credentials: UpdateProfile) => ({
+        url: "profile",
+        method: "PUT",
+        body: credentials,
+        credentials: "include",
+      }),
+    }),
   }),
 });
 
-export const { useLoginMutation, useLogoutMutation, useRegisterMutation } =
+export const { useLoginMutation, useLogoutMutation, useRegisterMutation, useUpdateProfileMutation } =
   userapi;

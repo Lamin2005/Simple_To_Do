@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Note } from "../types/note";
 import { deleteNote, fetchNotes, updateNote } from "../services/notelist";
 import { createNote } from "../services/notelist";
+import { toast } from "react-toastify";
 
 function Notelist() {
   const [notes, setNotes] = useState<Note[]>([]);
@@ -38,8 +39,10 @@ function Notelist() {
       const newNote = await createNote(title);
       setNotes((prevNotes) => [...prevNotes, newNote]);
       setTitle("");
+      toast.success("Note created successfully.");
     } catch (error) {
       console.log("Error creating note:", error);
+      toast.error("Failed to create note.");
     }
   };
 
@@ -47,8 +50,10 @@ function Notelist() {
     try {
       await deleteNote(id);
       setNotes((prevNotes) => prevNotes.filter((note) => note._id !== id));
+      toast.success("Note deleted successfully.");
     } catch (error) {
       console.log("Error deleting note: ", error);
+      toast.error("Failed to delete note.");
     }
   };
 
@@ -62,8 +67,10 @@ function Notelist() {
       );
       setEdit(false);
       setEditId("");
+      toast.success("Note updated successfully.");
     } catch (error) {
       console.log("Error Updateing note: ", error);
+      toast.error("Failed to update note.");
     }
   };
 

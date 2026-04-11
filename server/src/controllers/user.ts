@@ -105,7 +105,6 @@ export const updateProfile = async (
 
   existUser.name = name ?? existUser.name;
   existUser.email = email ?? existUser.email;
-
   if (password) {
     existUser.password = password;
   }

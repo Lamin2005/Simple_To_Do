@@ -5,10 +5,12 @@ import todoRoutes from "./routes/todoRoute";
 import userRoutes from "./routes/userRoute";
 import cors from "cors";
 import errorHandler from "./middlewares/errorHandler";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 const app = express();
 
+app.use(cookieParser());
 app.use(express.json());
 app.use(
   cors({

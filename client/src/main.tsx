@@ -8,6 +8,9 @@ import Login from "./pages/Login.tsx";
 import Register from "./pages/Register.tsx";
 import { Provider } from "react-redux";
 import { store } from "./store.ts";
+import Error from "./pages/Error.tsx";
+import Profile from "./pages/Profile.tsx";
+import ProtectRoute from "./pages/ProtectRoute.tsx";
 
 const router = createBrowserRouter([
   {
@@ -25,6 +28,18 @@ const router = createBrowserRouter([
       {
         path: "/register",
         element: <Register />,
+      },
+      {
+        path: "/profile",
+        element: (
+          <ProtectRoute>
+            <Profile />
+          </ProtectRoute>
+        ),
+      },
+      {
+        path: "*",
+        element: <Error />,
       },
     ],
   },
