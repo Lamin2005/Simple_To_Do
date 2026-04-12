@@ -1,11 +1,21 @@
 import { Request, Response } from "express";
 import Todo from "../models/todolist";
+import { AuthenticatedRequest } from "../middlewares/authmiddleware";
 
-export const create = async (req: Request, res: Response) => {
+export const create = async (req: AuthenticatedRequest, res: Response) => {
   const { title } = req.body;
+  const userId = req.user?._id;
+
+  if (!userId) {
+    res.status(401);
+    throw new Error("Unauthorized: User not authenticated");
+  }
+
+  // Assuming you have the user ID in the request object
   try {
     const newTodo = await Todo.create({
       title,
+      userId,
     });
 
     res.json({
