@@ -10,6 +10,8 @@ if (import.meta.env.VITE_MOOD === "production") {
   API_URL = import.meta.env.VITE_PR_URL;
 }
 
+axios.defaults.withCredentials = true;
+
 //REST_API DATA Fetching
 
 // export const fetchNotes = async () => {
