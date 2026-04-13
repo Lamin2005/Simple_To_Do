@@ -7,7 +7,7 @@ if (import.meta.env.VITE_MOOD === "development") {
 }
 
 if (import.meta.env.VITE_MOOD === "production") {
-  API_URL = import.meta.env.VITE_PR_URL;
+  API_URL = import.meta.env.VITE_API_URL;
 }
 
 axios.defaults.withCredentials = true;
