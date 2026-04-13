@@ -1,11 +1,20 @@
 import { Request, Response } from "express";
 import Todo from "../models/todolist";
+import { AuthenticatedRequest } from "../middlewares/authmiddleware";
 
-export const create = async (req: Request, res: Response) => {
+export const create = async (req: AuthenticatedRequest, res: Response) => {
   const { title } = req.body;
+  const userId = req.user?._id;
+
+  if (!userId) {
+    res.status(401);
+    throw new Error("Unauthorized: User not authenticated");
+  }
+
   try {
     const newTodo = await Todo.create({
       title,
+      userId,
     });
 
     res.json({
@@ -41,6 +50,10 @@ export const read = async (req: Request, res: Response) => {
   try {
     const Todos = await Todo.find();
 
+    if (!Todos) {
+      return res.status(404).json({ message: "No todos found for this user" });
+    }
+
     res.json({
       message: "Successfully Show todolists...",
       result: Todos,
@@ -48,25 +61,6 @@ export const read = async (req: Request, res: Response) => {
   } catch (error) {
     console.log(error);
     res.json({ message: "Something Wrong in show todo..." });
-  }
-};
-
-export const readdetail = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  try {
-    const Todos = await Todo.findById(id);
-
-    if (!Todos) {
-      return res.status(404).json({ message: "Todo not found" });
-    }
-
-    res.json({
-      message: "Successfully Show Dtail todolists...",
-      result: Todos,
-    });
-  } catch (error) {
-    console.log(error);
-    res.json({ message: "Something Wrong in show todo detail..." });
   }
 };
 

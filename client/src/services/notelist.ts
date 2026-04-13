@@ -10,6 +10,8 @@ if (import.meta.env.VITE_MOOD === "production") {
   API_URL = import.meta.env.VITE_PR_URL;
 }
 
+axios.defaults.withCredentials = true;
+
 //REST_API DATA Fetching
 
 // export const fetchNotes = async () => {
@@ -63,19 +65,29 @@ export const fetchNotes = async () => {
 };
 
 export const createNote = async (title: string) => {
-  const { data } = await axios.post(`${API_URL}/create`, { title });
+  const { data } = await axios.post(
+    `${API_URL}/create`,
+    { title },
+    { withCredentials: true },
+  );
   return data.result;
 };
 
 export const updateNote = async (id: string, title: string) => {
-  const { data } = await axios.put(`${API_URL}/todolist-edit/${id}`, {
-    id,
-    title,
-  });
+  const { data } = await axios.put(
+    `${API_URL}/todolist-edit/${id}`,
+    {
+      id,
+      title,
+    },
+    { withCredentials: true },
+  );
   return data.result;
 };
 
 export const deleteNote = async (id: string) => {
-  const { data } = await axios.delete(`${API_URL}/delete/${id}`);
+  const { data } = await axios.delete(`${API_URL}/delete/${id}`, {
+    withCredentials: true,
+  });
   return data.result;
 };
