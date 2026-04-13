@@ -13,7 +13,6 @@ if (import.meta.env.VITE_MOOD === "production") {
 axios.defaults.withCredentials = true;
 
 //REST_API DATA Fetching
-
 // export const fetchNotes = async () => {
 //   const response = await fetch(`${API_URL}/todolists`);
 //   console.log("API_URL:", API_URL);
