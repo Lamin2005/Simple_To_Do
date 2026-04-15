@@ -17,7 +17,6 @@ export const contect_DB = async () => {
     console.log(`DB connected successfully : ${dbconnect.connection.host}...`);
   } catch (error) {
     console.log(error);
-    response.json({ message: "Something Wrong..." });
     process.exit(1);
   }
 };

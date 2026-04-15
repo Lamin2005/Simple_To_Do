@@ -94,7 +94,7 @@ function Notelist() {
       {!loading && notes.length !== 0 && (
         <>
           {notes.map((note) => (
-            <>
+            <div key={note._id}>
               {note.userId === userInfo?._id ? (
                 <div
                   key={note._id}
@@ -128,7 +128,7 @@ function Notelist() {
                   <p>{note.title}</p>
                 </div>
               )}
-            </>
+            </div>
           ))}
         </>
       )}

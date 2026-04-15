@@ -49,15 +49,13 @@ export const delete_todo = async (req: Request, res: Response) => {
 export const read = async (req: Request, res: Response) => {
   try {
     const Todos = await Todo.find();
-
-    if (!Todos) {
-      return res.status(404).json({ message: "No todos found for this user" });
-    }
-
+    
     res.json({
       message: "Successfully Show todolists...",
       result: Todos,
     });
+
+
   } catch (error) {
     console.log(error);
     res.json({ message: "Something Wrong in show todo..." });

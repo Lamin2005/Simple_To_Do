@@ -1,14 +1,6 @@
 import axios from "axios";
 
-let API_URL = "";
-
-if (import.meta.env.VITE_MOOD === "development") {
-  API_URL = import.meta.env.VITE_URL;
-}
-
-if (import.meta.env.VITE_MOOD === "production") {
-  API_URL = import.meta.env.VITE_API_URL;
-}
+const API_URL = import.meta.env.VITE_API_URL ;
 
 axios.defaults.withCredentials = true;
 
@@ -60,6 +52,12 @@ axios.defaults.withCredentials = true;
 
 export const fetchNotes = async () => {
   const { data } = await axios.get(`${API_URL}/todolists`);
+  console.log(data.result);
+
+  if (!data.result) {
+    throw new Error("No notes found");
+  }
+
   return data.result;
 };
 
