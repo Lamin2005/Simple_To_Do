@@ -69,7 +69,9 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
 export const logout = asyncHandler(async (req: Request, res: Response) => {
   res.cookie("token", "", {
     httpOnly: true,
-    expires: new Date(0),
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "none",
+    maxAge: 0,
   });
 
   res.status(200).json({ message: "Logout Successfully! " });
